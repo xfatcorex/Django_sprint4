@@ -14,7 +14,7 @@ POST = Post.objects.filter(
     category__is_published=True
 )
 
-SORTING = '-pub_date'
+POST_SORTING = '-pub_date'
 
 
 def paginator(object_list, page_number):
@@ -32,7 +32,7 @@ def post_filter(posts_manager):
 def index(request):
     posts = post_filter(POST).annotate(
         comment_count=Count('comments')
-    ).order_by(SORTING)
+    ).order_by(POST_SORTING)
     page_obj = paginator(posts, request.GET.get('page'))
     context = {'page_obj': page_obj}
     return render(request, 'blog/index.html', context)
@@ -71,7 +71,7 @@ def profile(request, username):
     )
     posts = profile.posts.annotate(
         comment_count=Count('comments')
-    ).order_by(SORTING)
+    ).order_by(POST_SORTING)
     page_obj = paginator(posts, request.GET.get('page'))
     context = {'profile': profile, 'page_obj': page_obj}
     return render(request, 'blog/profile.html', context)
@@ -99,6 +99,7 @@ def create_and_edit_post(request, post_id=None):
     return render(request, 'blog/create.html', context)
 
 
+@login_required
 def delete_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.user != post.author:
@@ -124,6 +125,7 @@ def add_comment(request, post_id):
     return render(request, 'blog/detail.html', {'post': post, 'form': form})
 
 
+@login_required
 def edit_profile(request):
     username = get_object_or_404(
         User,
@@ -137,6 +139,7 @@ def edit_profile(request):
     return render(request, 'blog/user.html', context)
 
 
+@login_required
 def edit_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:
@@ -149,6 +152,7 @@ def edit_comment(request, post_id, comment_id):
     return render(request, 'blog/comment.html', context)
 
 
+@login_required
 def delete_comment(request, post_id, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
     if request.user != comment.author:

@@ -2,9 +2,10 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from core.models import PublishedCreatedAtModel
-
 from .validators import validate_words
 
+
+POST_SORTING = '-pub_date'
 
 User = get_user_model()
 
@@ -84,7 +85,7 @@ class Post(PublishedCreatedAtModel):
     )
 
     class Meta:
-        ordering = ('-pub_date',)
+        ordering = (POST_SORTING,)
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
@@ -115,4 +116,4 @@ class Comment(PublishedCreatedAtModel):
         verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return self.text
+        return self.text[:30]

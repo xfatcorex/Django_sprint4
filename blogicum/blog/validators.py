@@ -17,7 +17,7 @@ class ObsceneWords(models.Model):
 
 
 def validate_words(text):
-    words_list = [word.lower() for word in text.split()]
-    for word in words_list:
-        if ObsceneWords.objects.filter(word=word).exists():
+    obscene_words = ObsceneWords.objects.values_list('word', flat=True)
+    for word in obscene_words:
+        if word.lower() in text.lower():
             raise ValidationError(f'Слово "{word}" использовать нельзя')
