@@ -14,4 +14,3 @@ class PublishedCreatedAtModel(models.Model):
 
     class Meta:
         abstract = True
-
